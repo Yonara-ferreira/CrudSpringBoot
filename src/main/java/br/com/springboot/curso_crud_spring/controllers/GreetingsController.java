@@ -5,10 +5,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,10 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.springboot.curso_crud_spring.model.Usuario;
 import br.com.springboot.curso_crud_spring.repository.UsuarioRepository;
 
-/**
- *
- * A sample greetings controller to return greeting text
- */
 @RestController
 public class GreetingsController {
 	
@@ -56,4 +57,49 @@ public class GreetingsController {
 		return new ResponseEntity<List<Usuario>>(usuarios, HttpStatus.OK);
 		
 	}
+	
+	@PostMapping(value = "salvar")
+	@ResponseBody
+	public ResponseEntity<Usuario> salvar(@RequestBody Usuario usuario ){
+		
+		Usuario user = usuarioRepository.save(usuario);
+		
+		return new ResponseEntity<Usuario>(user, HttpStatus.CREATED);
+	}
+	
+	@DeleteMapping(value = "deletarUsuario")
+	@ResponseBody
+	public ResponseEntity<String> deletar(@RequestParam Long iduser ){
+		
+		 usuarioRepository.deleteById(iduser);
+		
+		return new ResponseEntity<String>("Usuario excluido com sucesso", HttpStatus.OK);
+	}
+	
+	
+	@GetMapping(value = "buscarUserId")
+	@ResponseBody
+	public ResponseEntity<Usuario> buscarUserId(@RequestParam(name = "iduser") Long iduser ){
+		
+		Usuario usuario = usuarioRepository.findById(iduser).get();
+		
+		return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "atualizarUsuario")
+	@ResponseBody
+	public ResponseEntity<?> atualizarUsuario(@RequestBody Usuario usuario ){
+		
+		if(usuario.getId() == null) {
+			
+			return new ResponseEntity<String>("Erro ao buscar usuario", HttpStatus.OK); 
+		}
+		
+		Usuario user = usuarioRepository.saveAndFlush(usuario);
+		
+		return new ResponseEntity<Usuario>(user, HttpStatus.OK);
+	
+	}
+	
+	
 }
