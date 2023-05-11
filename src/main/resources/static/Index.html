@@ -37,6 +37,7 @@
 	<div id="butoesDeEntrada">
 
 			<button type="button" class="btn btn-primary" onclick="salvarUsuario()">Salvar</button>
+			<button type="button" class="btn btn-secondary" onclick="document.getElementById('formCadastroUser').reset();">Novo</button>
 
 		</div>
 	
@@ -56,7 +57,26 @@
 		var nome = $('#nome').val();
 		var idade = $('#idade').val();
 		
-		
+		$.ajax({
+			method : "POST",
+			url : "salvar",
+			data : JSON.stringify({
+				id : id,
+				nome : nome,
+				idade : idade
+			}),
+			contentType : "application/json; charset=utf-8",
+			success : function(response) {
+
+				$("#id").val(response.id);
+				alert("Salvo com Sucesso!");
+
+			}
+		}).fail(function(xhr, status, errorThrown) {
+
+			alert("Erro ao Salvar: " + xhr.responseText);
+
+		});
 	}
 	
 
