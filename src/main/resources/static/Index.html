@@ -9,6 +9,16 @@
 			integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
 			crossorigin="anonymous">
 	 
+	 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<style type="text/css">
+		 html {
+	 	margin-left: 40%;
+	 	margin-right: 5%;
+	 	margin-top: 5%;
+	 	font-size:medium;
+	 	}
+	 
+	 </style>
 </head>
 
 <body>
@@ -18,19 +28,19 @@
 	<form action="" id="formCadastroUser">
 		
 			<div class="mb-3">
-				<label for="id" class="form-label">ID</label>
-				 <input type="text" class="form-control" id="id" readonly="readonly">
+				<label for="id" class="form-label" >ID</label>
+				 <input type="text" style="width:8%" class="form-control" id="id" readonly="readonly">
 			</div>
 
 			<div class="mb-3">
 				<label for="nome" class="form-label">Nome do Usuário</label> <input
-					type="text" class="form-control" id="nome"
+					type="text"style="width:50%" class="form-control" id="nome"
 					placeholder="Informe o nome" required="required">
 			</div>
 
 			<div class="mb-3">
-				<label for="idade" class="form-label">Idade</label> <input
-					type="type" class="form-control" id="idade">
+				<label for="idade" class="form-label" >Idade</label> <input
+					type="number" style="width:8%" class="form-control" id="idade">
 			</div>
 	
 	</form>
@@ -58,21 +68,22 @@
           </div>
           <button type="button" class="btn btn-success" onclick="PesquisaUser()">Buscar</button>
         </form>
-
-					<table class="table" id="tabela-resultados">
-						<thead>
-							<tr>
-								<th scope="col">ID</th>
-								<th scope="col">Nome</th>
-								<th scope="col">Editar</th>
-								<th scope="col">Excluir</th>
-							</tr>
-						</thead>
-						<tbody>
-
-						</tbody>
-					</table>
-
+					<div style="height: 300px; overflow: scroll;">
+						<table class="table" id="tabela-resultados">
+							
+							<thead>
+								<tr>
+									<th scope="col">ID</th>
+									<th scope="col">Nome</th>
+									<th scope="col">Editar</th>
+									<th scope="col">Excluir</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+						
+					</div>
 				</div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -134,16 +145,17 @@
 		}
 		
 		
-		function DeleteDaTela(id){
-			
+		
+		function DeleteDaTela(id) {
+
 			var id = $('#id').val();
-			
-			deletarUser(id);
-			
-			document.getElementById('formCadastroUser').reset();
+			if (id != null && id.trim() != '') {
+				deletarUser(id);
+
+				document.getElementById('formCadastroUser').reset();
+
+			}
 		}
-		
-		
 
 		function EdicaoUsuario(id) {
 			$.ajax({
@@ -165,29 +177,29 @@
 
 			});
 		}
-		
-		function deletarUser(id){
-			
-			if(confirm('Deseja realmente delatar o usuario?')){
-				
+
+		function deletarUser(id) {
+
+			if (confirm('Deseja realmente delatar o usuario?')) {
+
 				$.ajax({
 					method : "DELETE",
 					url : "deletarUsuario",
 					data : "iduser=" + id,
 					success : function(response) {
-						
+
 						$('#' + id).remove();
-						
+
 						alert(response);
-	
+
 					}
 				}).fail(function(xhr, status, errorThrown) {
-	
+
 					alert("Erro ao deletar usuario: " + xhr.responseText);
 				});
-				
+
 			}
-			
+
 		}
 
 		function salvarUsuario() {
@@ -195,6 +207,18 @@
 			var nome = $('#nome').val();
 			var idade = $('#idade').val();
 
+			if(nome == null || nome != null && nome.trim() == ''){
+				$('#nome').focus();
+				Swal.fire('Por gentileza, informe o nome do usuario');
+				return;
+			}
+			if(idade == null || idade != null && idade.trim() == ''){
+				$('#idade').focus();
+				Swal.fire('Por gentileza, informe a idade ');
+				return;
+			}
+			
+			
 			$.ajax({
 				method : "POST",
 				url : "salvar",
